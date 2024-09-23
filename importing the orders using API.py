@@ -7,8 +7,8 @@ def convert_datetime(veeqo_datetime):
     return veeqo_datetime[:-1]
 
 # Retrieve data from ShipStation API
-shipstation_api_key = 'fea4ddec8cba492db7a7914230eb697d'
-shipstation_api_secret = 'dc7e476c71e04a3585431227204374a0'
+shipstation_api_key = 'api_key'
+shipstation_api_secret = 'secret_key'
 shipstation_base_url = 'https://ssapi.shipstation.com/orders'
 page_size = 500
 
@@ -99,10 +99,10 @@ orders_data = shipstation_orders_data + veeqo_orders_data
 # Connect to MySQL database with autocommit mode
 try:
     mydb = mysql.connector.connect(
-        host="183.82.62.219",
-        user="dbuser",
-        password="A@123456",
-        database="stockandmanagement",
+        host="host",
+        user="username",
+        password="password",
+        database="name",
         autocommit=True
     )
     print("Connected to MySQL database")
