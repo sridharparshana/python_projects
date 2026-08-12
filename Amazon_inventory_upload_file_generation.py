@@ -5,10 +5,10 @@ import mysql.connector
 
 # MySQL database connection details
 db_config = {
-    "host": "server",
-    "user": "user",
-    "password": "password",
-    "database": "databasename"
+    "host": "34.59.161.143",
+    "user": "dbuser",
+    "password": "Nova@2026",
+    "database": "stockandmanagement_prod"
 }
 
 # Function to execute a query and return the result as a pandas DataFrame
@@ -36,7 +36,7 @@ def process_table(table_name, headers):
     current_stock_query = f"SELECT msku, sum(quantity) as Quantity FROM tbl_inventory WHERE locationid IN (19, 20) GROUP BY MSKU"
     current_stock_df = execute_query_to_dataframe(current_stock_query)
 
-    table_query = f"SELECT * FROM {table_name}"
+    table_query = f"SELECT * FROM {table_name} WHERE listingstatus = 'active' AND item_name NOT LIKE '%pure silver%' AND item_name NOT LIKE '%brass%'"
     table_df = execute_query_to_dataframe(table_query)
 
     consolidated_rows = []
@@ -56,17 +56,17 @@ def process_table(table_name, headers):
                 current_stock_row = current_stock_df[current_stock_df["msku"] == msku]
                 if not current_stock_row.empty:
                     quantity = int(current_stock_row.iloc[0]["Quantity"]) // int(pack_size)  # Convert to int before division
-                    if quantity <= 0:
+                    if quantity <= 1:
                         quantity = 200
-                        handling_time = 5
+                        handling_time = 10
                     else:
-                        handling_time = 1
+                        handling_time = 5
                 else:
                     quantity = 200
-                    handling_time = 5
+                    handling_time = 10
             else:
                 quantity = 200
-                handling_time = 5
+                handling_time = 10
         consolidated_rows.append([sku, row.get("price", ""), row.get("minimum-seller-allowed-price", ""),
                                   row.get("maximum-seller-allowed-price", ""), quantity, handling_time,
                                   row.get("fulfillment-channel", "")])
@@ -80,11 +80,11 @@ def process_table(table_name, headers):
     return consolidated_df
 
 # Output directory
-output_directory = "D:\Consolidated file"  # Use forward slashes for directory path
+output_directory = "C:\Consolidated file"  # Use forward slashes for directory path
 
 # Process and save each task
 tasks = [
-    ("tbl_amazon_usa_master", "consolidated_amazon_dig_quantity")
+    ("tbl_amazon_novadig_master", "consolidated_amazon_novadig_quantity")
 ]
 
 for table_name, output_file_name_base in tasks:
